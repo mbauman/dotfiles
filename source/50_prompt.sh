@@ -140,8 +140,13 @@ function prompt_command() {
   PS1="$PS1$(prompt_hg)"
   # misc: [cmd#:hist#]
   # PS1="$PS1$c1[$c0#\#$c1:$c0!\!$c1]$c9"
-  # path: [user@host:path]
-  PS1="$PS1$c1[$c0\u$c1@$c0\h$c1:$c0\w$c1]$c9"
+  if [[ "$USER" == "mbauman" ]] ; then
+    # Skip username
+    PS1="$PS1$c1[$c0\h$c1:$c0\w$c1]$c9"
+  else
+    # path: [user@host:path]
+    PS1="$PS1$c1[$c0\u$c1@$c0\h$c1:$c0\w$c1]$c9"
+  fi
   PS1="$PS1\n"
   # exit code: 127
   PS1="$PS1$(prompt_exitcode "$exit_code")"
