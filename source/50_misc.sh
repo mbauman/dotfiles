@@ -7,8 +7,9 @@ shopt -s checkwinsize
 
 export GREP_OPTIONS='--color=auto'
 
-# Prevent less from clearing the screen while still showing colors.
-export LESS=-XR
+# Paging setup options
+export LESS='-XeiMj4R'              #Don't clear screen, exit at EOF, ignore case, long prompt, interpret color codes
+export PAGER="less"                 #allow exit on EOF and case-insensitive search
 
 # Set the terminal's title bar.
 function titlebar() {
@@ -19,6 +20,3 @@ function titlebar() {
 if [[ -e ~/.ssh/known_hosts ]]; then
   complete -o default -W "$(cat ~/.ssh/known_hosts | sed 's/[, ].*//' | sort | uniq | grep -v '[0-9]')" ssh scp sftp
 fi
-
-# Disable ansible cows }:]
-export ANSIBLE_NOCOWS=1

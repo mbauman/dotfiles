@@ -1,11 +1,24 @@
-set editing-mode vi
+$if Bash
+    # Search history back and forward using page-up and page-down
+    "\e[A": history-search-backward
+    "\e[B": history-search-forward
+	Control-p: history-search-backward
+	Control-n: history-search-forward
 
-# COMMAND MODE
-set keymap vi-command
+	# Movement by word
+	"\e[1;5C": forward-word
+	"\e[1;5D": backward-word
 
-# INSERT MODE
-set keymap vi-insert
+    # Completion
+    set match-hidden-files off
+    set completion-query-items 350
 
-# Up/down arrows search history
-"\e[A": history-search-backward
-"\e[B": history-search-forward
+    # Automatically expand history on space
+    Space: magic-space
+
+    # Use case-insensitive tab-completion
+    set completion-ignore-case on
+
+$endif
+
+$include /etc/inputrc

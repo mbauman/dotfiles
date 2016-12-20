@@ -1,6 +1,9 @@
 [user]
-  name = Ben Alman
-  email = EMAIL
+  # email = EMAIL
+  name = Matt Bauman
+[github]
+  user = mbauman
+  # token = TOKEN
 [core]
   autocrlf = input
   whitespace = fix,space-before-tab,tab-in-indent,trailing-space
@@ -14,46 +17,24 @@
   df = diff
   g = grep -I
   lg = log -p
-  pp = !"echo 'Pull'; git pull; echo 'Push'; git push"
-  rb = rbranch
   rv = review
   st = status
-  ksdiff = difftool -y -t Kaleidoscope
+  hist = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short
+  type = cat-file -t
+  dump = cat-file -p
+  svnstatus = !"git --no-pager log `git svn log --show-commit --oneline --limit=1 | awk '{print $3}'`..HEAD --oneline"
 [branch "master"]
   remote = origin
   merge = refs/heads/master
+[push]
+  default = simple
+[diff "pdf"]
+  textconv = pdf2txt
+[mergetool]
+  keepBackup = true
 [color]
   ui = auto
-[color "branch"]
-  current = yellow reverse
-  local = yellow
-  remote = green
-[color "diff"]
-  meta = yellow bold
-  frag = magenta bold
-  old = red bold
-  new = green bold
-[color "status"]
-  added = yellow
-  changed = green
-  untracked = cyan
 [merge]
   log = true
-[difftool "Kaleidoscope"]
-  cmd = ksdiff-wrapper git \"$LOCAL\" \"$REMOTE\"
 [rerere]
   enabled = 1
-[url "git@github.com:"]
-  insteadOf = "gh:"
-  pushInsteadOf = "github:"
-  pushInsteadOf = "git://github.com/"
-[url "git://github.com/"]
-  insteadOf = "github:"
-[url "git@gist.github.com:"]
-  insteadOf = "gst:"
-  pushInsteadOf = "gist:"
-  pushInsteadOf = "git://gist.github.com/"
-[url "git://gist.github.com/"]
-  insteadOf = "gist:"
-[url "git@heroku.com:"]
-  insteadOf = "heroku:"
