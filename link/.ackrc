@@ -1,0 +1,17 @@
+--type-add
+    tex=.dtx,.clo,.tikz
+
+--type-set
+    cmake=.cmake
+
+--type-set
+	csv=.csv
+
+--type-set
+	cfg=.cfg
+
+--type-set
+	matlab=.m
+
+--type-set
+	julia=.jl
