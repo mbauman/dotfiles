@@ -127,6 +127,9 @@ function prompt_command() {
   # While the simple_prompt environment var is set, disable the awesome prompt.
   [[ "$simple_prompt" ]] && PS1='\n$ ' && return
 
+  # Set the title bar to the hostname and current directory name
+  echo -ne "\033]0;${HOSTNAME}:$(basename ${PWD})\007"
+
   prompt_getcolors
   # http://twitter.com/cowboy/status/150254030654939137
   PS1="\n"
