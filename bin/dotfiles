@@ -206,7 +206,7 @@ function copy_test() {
 }
 function copy_do() {
   e_success "Copying ~/$1."
-  cp "$2" ~/
+  cp "$2" ~/"$1"
 }
 
 # Link files.
@@ -216,13 +216,55 @@ function link_test() {
 }
 function link_do() {
   e_success "Linking ~/$1."
-  ln -sf ${2#$HOME/} ~/
+  ln -sf "$2" ~/"$1"
+}
+
+# Do a single file.
+# First argument is the operation (link, copy, init)
+# Second argument is the filename (e.g., .bashrc, .ssh/rc, etc)
+function do_file() {
+  local subfiles subbase skip
+  local base="$2"
+  local dest="$HOME/$base"
+  local src="$DOTFILES/$1/$base"
+  # If both source and destination are existing directories
+  if [[ -d "$src"  && ! -L "$src" &&
+            -d "$dest" && ! -L "$dest" ]]; then
+    # Then recurse into the source directory and treat its files normally
+    subfiles=("$src/"*)
+    for subfile in "${subfiles[@]}"; do
+      subbase="$(basename $subfile)"
+      do_file "$1" "$base/$subbase"
+    done
+  else
+    # Run _test function only if declared.
+    if [[ $(declare -f "$1_test") ]]; then
+      # If _test function returns a string, skip file and print that message.
+      skip="$("$1_test" "$src" "$dest")"
+      if [[ "$skip" ]]; then
+        e_error "Skipping ~/$base, $skip."
+        return 1
+      fi
+      # Destination file already exists in ~/. Back it up!
+      if [[ -e "$dest" ]]; then
+        e_arrow "Backing up ~/$base."
+        # Set backup flag, so a nice message can be shown at the end.
+        backup=1
+        # Create backup dir if it doesn't already exist.
+        [[ -e "$(dirname $backup_dir/$base)" ]] || mkdir -p "$(dirname $backup_dir/$base)"
+        # Backup file / link / whatever.
+        mv "$dest" "$backup_dir/$base"
+      fi
+    fi
+    # Do stuff.
+    "$1_do" "$base" "$src"
+  fi
 }
 
 # Copy, link, init, etc.
 function do_stuff() {
   local base dest skip
-  local files=($DOTFILES/$1/*)
+  local files=("$DOTFILES/$1/"*)
   [[ $(declare -f "$1_files") ]] && files=($($1_files "${files[@]}"))
   # No files? abort.
   if (( ${#files[@]} == 0 )); then return; fi
@@ -231,28 +273,7 @@ function do_stuff() {
   # Iterate over files.
   for file in "${files[@]}"; do
     base="$(basename $file)"
-    dest="$HOME/$base"
-    # Run _test function only if declared.
-    if [[ $(declare -f "$1_test") ]]; then
-      # If _test function returns a string, skip file and print that message.
-      skip="$("$1_test" "$file" "$dest")"
-      if [[ "$skip" ]]; then
-        e_error "Skipping ~/$base, $skip."
-        continue
-      fi
-      # Destination file already exists in ~/. Back it up!
-      if [[ -e "$dest" ]]; then
-        e_arrow "Backing up ~/$base."
-        # Set backup flag, so a nice message can be shown at the end.
-        backup=1
-        # Create backup dir if it doesn't already exist.
-        [[ -e "$backup_dir" ]] || mkdir -p "$backup_dir"
-        # Backup file / link / whatever.
-        mv "$dest" "$backup_dir"
-      fi
-    fi
-    # Do stuff.
-    "$1_do" "$base" "$file"
+    do_file "$1" "$base"
   done
 }
 
