@@ -21,9 +21,6 @@ export FC='~/Homebrew/bin/gfortran'
 export F77='~/Homebrew/bin/gfortran'
 export F90='~/Homebrew/bin/gfortran'
 
-# CPAN: http://askubuntu.com/questions/209615/change-cpan-install-directory
-export PERL5LIB=/Users/mbauman/.cpan/perl5:/Users/mbauman/.cpan/perl5/darwin-thread-multi-2level
-
 function blockads () {
   sudo cp /etc/hosts.block /etc/hosts
   sudo dscacheutil -flushcache
