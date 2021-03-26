@@ -1,8 +1,11 @@
 # OSX-only stuff. Abort if not OSX.
 is_osx || return 1
 
-PATH="~/bin:$PATH"
+PATH="$HOME/bin:$PATH"
 export PATH
+
+# use brew but don't put it in the path — instead manually manage links from ~/bin
+alias brew="$HOME/Homebrew/bin/brew"
 
 # Make 'less' more.
 [[ "$(type -P lesspipe.sh)" ]] && eval "$(lesspipe.sh)"
